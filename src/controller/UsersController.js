@@ -46,8 +46,8 @@ class UsersController {
       throw new AppError('Este e-mail já está em uso')
     }
 
-    user.name = name
-    user.email = email
+    user.name = name ?? user.name
+    user.email = email ?? user.email
 
     if (password && !old_password) {
       const checkOldPassword = await compare(old_password, user.password)
@@ -63,7 +63,8 @@ class UsersController {
       name = ?,
       email = ?,
       password = ?,
-      updated_at = DATETIME('now') WHERE id = ?
+      updated_at = DATETIME('now') 
+      WHERE id = ?
       `,
       [user.name, user.email, user.password, new Date(), id]
     )
