@@ -6,7 +6,7 @@ class NotesController {
 
     const { user_id } = requests.params
 
-    const note_id = await knex('notes').insert({
+    const [note_id] = await knex('notes').insert({
       title,
       description,
       user_id
@@ -21,7 +21,7 @@ class NotesController {
 
     await knex('links').insert(linksInsert)
 
-    const tagsInsert = links.map(tags => {
+    const tagsInsert = tags.map(name => {
       return {
         note_id,
         name,
@@ -33,3 +33,5 @@ class NotesController {
     response.json()
   }
 }
+
+module.exports = NotesController
