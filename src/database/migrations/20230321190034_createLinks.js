@@ -8,7 +8,8 @@ exports.up = knex =>
       .references('id')
       .inTable('notes')
       .onDelete('CASCADE')
-    table.timestamp('created_at').default(knex.fn.now())
+      .timestamp('created_at')
+      .default(knex.fn.now())
   })
 
 exports.down = knex => knex.schema.dropTable('links')
