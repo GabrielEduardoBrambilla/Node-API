@@ -4,7 +4,7 @@ exports.up = knex =>
     table.text('name').notNullable()
 
     table
-      .integer('note_id')
+      .integer('notes_id')
       .references('id')
       .inTable('notes')
       .onDelete('CASCADE')
