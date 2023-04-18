@@ -1,6 +1,7 @@
 const { hash, compare } = require('bcryptjs')
-const sqliteConnection = require('../database/sqlite')
 const AppError = require('../utils/AppError')
+
+const sqliteConnection = require('../database/sqlite')
 
 class UsersController {
   async create(request, response) {
@@ -16,25 +17,25 @@ class UsersController {
       throw new AppError('Este email já foi registrado')
     }
 
-    const hashedPassoword =
-      (await hash(password, 8)) -
-      +(await database.run(
-        'INSERT INTO users (name, email, password) VALUES (?,?,?)',
-        [name, email, hashedPassoword]
-      ))
+    const hashedPassword = await hash(password, 8)
+
+    await database.run(
+      'INSERT INTO users (name, email, password) VALUES (?,?,?)',
+      [name, email, hashedPassword]
+    )
 
     return response.status(201).json()
   }
 
   async update(request, response) {
-    const { name, email, password } = request.body
+    const { name, email, password, old_password } = request.body
     const { id } = request.params
 
     const database = await sqliteConnection()
     const user = await database.get('SELECT * FROM users WHERE id = (?)', [id])
 
     if (!user) {
-      throw new AppError('Usuárioi não encontrado')
+      throw new AppError('Usuário não encontrado')
     }
 
     const userWithUpdatedEmail = await database.get(
