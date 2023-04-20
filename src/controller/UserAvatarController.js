@@ -2,11 +2,15 @@ const knex = require('../database/knex')
 const AppError = require('../utils/AppError')
 const DiskStorage = require('../providers/DiskStorage')
 const { diskStorage } = require('multer')
+const sqliteConnection = require('../database/sqlite')
 
 class UserAvatarController {
   async update(request, response) {
     const user_id = request.user.user_id
     const avatarFilename = request.file.filename
+
+    const database = await sqliteConnection()
+    const diskStorage = new DiskStorage()
 
     const user = await knex('users').where({ id: user_id }).first()
 
@@ -23,6 +27,7 @@ class UserAvatarController {
 
     const filename = await diskStorage.saveFile(avatarFilename)
     user.avatar = filename
+
     await knex('users').update(user).where({ id: user.id })
 
     return response.json(user)

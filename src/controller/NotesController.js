@@ -63,13 +63,13 @@ class NotesController {
     let notes
 
     if (tags) {
-      const filterTags = tags.split(',').map(t => t.trim())
+      const filterTags = tags.split(',').map(tag => tag)
 
       notes = await knex('tags')
         .select(['notes.id', 'notes.title', 'notes.user_id'])
         .where('notes.user_id', user_id)
         .whereLike('notes.title', `%${title}%`)
-        .whereIn('name', filterTags)
+        .whereIn('tags.name', filterTags)
         .innerJoin('notes', 'notes.id', 'tags.note_id')
         .groupBy('notes.id')
         .orderBy('notes.title')
@@ -91,7 +91,7 @@ class NotesController {
       }
     })
 
-    return response.json({ notesWithTags })
+    return response.json(notesWithTags)
   }
 }
 
